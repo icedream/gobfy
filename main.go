@@ -87,7 +87,7 @@ func (p *Processor) Execute() {
 		instruction := p.instructionBuffer[p.instructionPointer]
 
 		if p.Debug {
-			log.Printf("exec 0x%[2]x = %[1]q, data: 0x%[3]x = %[3]q (0x%[4]x), reserved data size: %[5]d B",
+			log.Printf("exec 0x%[2]x = %[1]q, data: 0x%[4]x = %[3]q (0x%[3]x), reserved data size: %[5]d B",
 				instruction,
 				p.instructionPointer,
 				p.Data[p.DataPointer],
