@@ -232,4 +232,5 @@ func main() {
 
 	p.Load(input)
 	p.Execute()
+	p.ExpectEnd()
 }
