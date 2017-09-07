@@ -26,6 +26,8 @@ var (
 	app = kingpin.New("gobfy", "Yet another interpreter for Brainfuck programs.")
 
 	argInput = app.Arg("input", "The source file of the program to execute.").Required().ExistingFile()
+
+	flagDebug = app.Flag("debug", "Indicates whether to display information about the current state before executing each instruction.").Bool()
 )
 
 const (
@@ -41,6 +43,8 @@ type Closure struct {
 type Processor struct {
 	Data        []byte
 	DataPointer int
+
+	Debug bool
 
 	stdin *bufio.Reader
 
@@ -82,12 +86,14 @@ func (p *Processor) Execute() {
 	for p.instructionPointer < len(p.instructionBuffer) {
 		instruction := p.instructionBuffer[p.instructionPointer]
 
-		/*log.Printf("exec 0x%[2]x = %[1]q, data: 0x%[3]x = %[3]q (0x%[4]x), reserved data size: %[5]d B",
-		instruction,
-		p.instructionPointer,
-		p.Data[p.DataPointer],
-		p.DataPointer,
-		len(p.Data))*/
+		if p.Debug {
+			log.Printf("exec 0x%[2]x = %[1]q, data: 0x%[3]x = %[3]q (0x%[4]x), reserved data size: %[5]d B",
+				instruction,
+				p.instructionPointer,
+				p.Data[p.DataPointer],
+				p.DataPointer,
+				len(p.Data))
+		}
 
 		switch instruction {
 		case InstMoveRight:
@@ -219,6 +225,11 @@ func main() {
 	}
 
 	p := NewProcessor()
+
+	if flagDebug != nil {
+		p.Debug = *flagDebug
+	}
+
 	p.Load(input)
 	p.Execute()
 }
