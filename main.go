@@ -7,6 +7,8 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+
+	"gopkg.in/alecthomas/kingpin.v2"
 )
 
 const (
@@ -18,6 +20,12 @@ const (
 	InstInput          = ','
 	InstLoopStart      = '['
 	InstLoopEnd        = ']'
+)
+
+var (
+	app = kingpin.New("gobfy", "Yet another interpreter for Brainfuck programs.")
+
+	argInput = app.Arg("input", "The source file of the program to execute.").Required().ExistingFile()
 )
 
 const (
@@ -200,7 +208,9 @@ func (p *Processor) ExpectEnd() {
 }
 
 func main() {
-	inputFilePath := os.Args[1]
+	kingpin.MustParse(app.Parse(os.Args[1:]))
+
+	inputFilePath := *argInput
 
 	// Open BF source code
 	input, err := ioutil.ReadFile(inputFilePath)
